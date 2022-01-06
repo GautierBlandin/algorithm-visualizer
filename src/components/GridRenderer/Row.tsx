@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import {useContext} from 'react';
 import Square from "./Square";
 import {GridRendererContext} from "./context/GridRenderer.context";
 

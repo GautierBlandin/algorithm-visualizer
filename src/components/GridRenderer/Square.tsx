@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import {useContext} from 'react';
 import {GridRendererContext} from "./context/GridRenderer.context";
 
 export interface SquareProps {

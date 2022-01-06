@@ -1,4 +1,3 @@
-import React from 'react';
 import Row from "./Row";
 import GridRendererProvider from "./context/GridRenderer.provider";
 

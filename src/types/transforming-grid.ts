@@ -4,9 +4,11 @@ export interface TransformingGrid{
 }
 
 export interface Step{
-    transformations: {
-        newSquareState: number;
-        row: number;
-        col: number;
-    }[];
+    transformations: Transformation[];
+}
+
+export interface Transformation{
+    newSquareState: number;
+    row: number;
+    col: number;
 }
