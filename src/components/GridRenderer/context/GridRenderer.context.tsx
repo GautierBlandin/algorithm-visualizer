@@ -4,6 +4,7 @@ export interface GridRendererContextInterface {
     squareSize: number;
     borderColor: string;
     colorMatrix: string[][];
+    onSquareClick?: (x: number, y: number) => void;
 }
 
 const defaultValues: GridRendererContextInterface = {

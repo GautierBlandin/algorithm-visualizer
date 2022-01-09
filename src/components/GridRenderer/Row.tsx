@@ -26,6 +26,8 @@ export default function Row({colorRow, index}: RowProps){
                 color={color}
                 hasRightBorder={colIndex + 1 == colorRow.length}
                 hasBottomBorder={hasBottomBorder(index, colIndex)}
+                rowIndex={index}
+                colIndex={colIndex}
             />
         })}
         <style>

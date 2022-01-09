@@ -1,18 +1,21 @@
 import {useContext} from 'react';
 import {GridRendererContext} from "./context/GridRenderer.context";
+import gridRendererProvider from "./context/GridRenderer.provider";
 
 export interface SquareProps {
     color: string;
     hasRightBorder?: boolean;
     hasBottomBorder?: boolean;
+    rowIndex: number;
+    colIndex: number;
 }
 
-export default function Square({color, hasRightBorder, hasBottomBorder}: SquareProps){
+export default function Square({color, hasRightBorder, hasBottomBorder, rowIndex, colIndex}: SquareProps){
     const gridRendererContext = useContext(GridRendererContext)
     const borderColor = gridRendererContext.borderColor;
 
     return(
-    <div>
+    <div onClick={gridRendererContext.onSquareClick ? (() => {gridRendererContext.onSquareClick!(rowIndex, colIndex)}) : undefined}>
         <style jsx>
             {`
                 div {
@@ -23,6 +26,7 @@ export default function Square({color, hasRightBorder, hasBottomBorder}: SquareP
                 border-left: 1px solid ${borderColor};
                 ${hasRightBorder ? `border-right: 1px solid ${borderColor};` : ''}
                 ${hasBottomBorder ? `border-bottom: 1px solid ${borderColor};` : ''}
+                ${gridRendererContext.onSquareClick ? `cursor: pointer;` : ''}
                 }
                 }
             `}

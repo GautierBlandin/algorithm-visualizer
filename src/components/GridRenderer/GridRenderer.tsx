@@ -5,11 +5,24 @@ export interface GridRendererProps {
     colorMatrix: string[][];
     squareSize: number;
     borderColor?: string;
+    animations?: {
+        coordinates: {
+            row: number,
+            col: number,
+        }[]
+        color: string;
+    }
+    onSquareClick?: (x: number, y: number) => void;
 }
 
-export default function GridRenderer({colorMatrix, squareSize, borderColor = 'black'}: GridRendererProps){
+export default function GridRenderer({colorMatrix, squareSize, borderColor = 'black', onSquareClick}: GridRendererProps){
     return(
-        <GridRendererProvider squareSize = {squareSize} borderColor={borderColor} colorMatrix={colorMatrix}>
+        <GridRendererProvider
+            squareSize = {squareSize}
+            borderColor={borderColor}
+            colorMatrix={colorMatrix}
+            onSquareClick={onSquareClick}
+        >
             <div className="grid">
                 {colorMatrix.map((row, rowIndex) => (
                     <Row key={rowIndex} colorRow={row} index={rowIndex}/>
