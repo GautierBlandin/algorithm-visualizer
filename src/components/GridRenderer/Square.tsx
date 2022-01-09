@@ -15,7 +15,11 @@ export default function Square({color, hasRightBorder, hasBottomBorder, rowIndex
     const borderColor = gridRendererContext.borderColor;
 
     return(
-    <div onClick={gridRendererContext.onSquareClick ? (() => {gridRendererContext.onSquareClick!(rowIndex, colIndex)}) : undefined}>
+    <div
+        onClick={gridRendererContext.onSquareClick ? (() => {gridRendererContext.onSquareClick!(rowIndex, colIndex)}) : undefined}
+        onMouseEnter={gridRendererContext.onSquareEnter ? (() => {gridRendererContext.onSquareEnter!(rowIndex, colIndex)}) : undefined}
+        onMouseDown={gridRendererContext.onSquareMouseDown ? (() => {gridRendererContext.onSquareMouseDown!(rowIndex, colIndex)}) : undefined}
+    >
         <style jsx>
             {`
                 div {
@@ -26,7 +30,10 @@ export default function Square({color, hasRightBorder, hasBottomBorder, rowIndex
                 border-left: 1px solid ${borderColor};
                 ${hasRightBorder ? `border-right: 1px solid ${borderColor};` : ''}
                 ${hasBottomBorder ? `border-bottom: 1px solid ${borderColor};` : ''}
-                ${gridRendererContext.onSquareClick ? `cursor: pointer;` : ''}
+                ${gridRendererContext.onSquareClick || 
+                    gridRendererContext.onSquareEnter || 
+                     gridRendererContext.onSquareMouseDown
+                ? `cursor: pointer;` : ''}
                 }
                 }
             `}

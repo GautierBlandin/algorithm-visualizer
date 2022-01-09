@@ -2,7 +2,7 @@ import {
     Algorithms,
     ExternalGridExplorationRequest,
     GridExplorationResult
-} from "./grid.interface";
+} from "./grid-explorer.interfaces";
 
 import { depthFirstSearch } from "./algorithms/grid-dfs";
 import { breadthFirstSearch } from "./algorithms/grid-bfs";

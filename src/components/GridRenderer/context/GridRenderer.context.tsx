@@ -5,6 +5,8 @@ export interface GridRendererContextInterface {
     borderColor: string;
     colorMatrix: string[][];
     onSquareClick?: (x: number, y: number) => void;
+    onSquareEnter?: (x: number, y: number) => void;
+    onSquareMouseDown?: (x: number, y: number) => void;
 }
 
 const defaultValues: GridRendererContextInterface = {

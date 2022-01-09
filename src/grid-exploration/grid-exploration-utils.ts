@@ -1,43 +1,6 @@
-export interface Grid {
-    grid: CellState[][];
-}
+import {CellState, Coordinate} from "./grid-explorer.interfaces";
 
-export interface Coordinate {
-    x: number;
-    y: number;
-}
-
-export enum Algorithms {
-    BFS,
-    DFS
-}
-
-export interface ExternalGridExplorationRequest {
-    request: GridExplorationRequest;
-    algorithm: Algorithms
-}
-
-export interface GridExplorationRequest {
-    grid: CellState[][];
-    start: Coordinate;
-    target?: Coordinate;
-}
-
-export interface GridExplorationResult {
-    foundTarget: boolean;
-    shortestPath: Coordinate[];
-    visitingOrder: Coordinate[];
-    targetCoordinate?: Coordinate;
-    request: GridExplorationRequest;
-}
-
-export enum CellState{
-    EMPTY,
-    BLOCKED,
-    TARGET
-}
-
-export function isCoordinateValid(coords: Coordinate, grid: CellState[][]): boolean{
+export function isCoordinateValid(coords: Coordinate, grid: CellState[][]): boolean {
     const {x, y} = coords;
     const n = grid.length;
     const m = grid[0].length;
@@ -45,7 +8,7 @@ export function isCoordinateValid(coords: Coordinate, grid: CellState[][]): bool
     return x >= 0 && x < n && y >= 0 && y < m && grid[x][y] !== CellState.BLOCKED;
 }
 
-export function coordinateIndex(coords: Coordinate, grid: any[][]): number{
+export function coordinateIndex(coords: Coordinate, grid: any[][]): number {
     const {x, y} = coords;
     const n = grid.length;
     const m = grid[0].length;
@@ -60,12 +23,12 @@ export function indexCoordinate(index: number, grid: any[][]): Coordinate {
     return {x: Math.floor(index / m), y: index % m};
 }
 
-export function generateEmptyGrid(n: number, m: number): CellState[][]{
+export function generateEmptyGrid(n: number, m: number): CellState[][] {
     const grid: CellState[][] = [];
 
-    for (let i = 0; i < n; i++){
+    for (let i = 0; i < n; i++) {
         const row: CellState[] = [];
-        for (let j = 0; j < m; j++){
+        for (let j = 0; j < m; j++) {
             row.push(CellState.EMPTY);
         }
         grid.push(row);
@@ -74,17 +37,17 @@ export function generateEmptyGrid(n: number, m: number): CellState[][]{
     return grid;
 }
 
-export function generateNeighbours(coord: Coordinate, diagonal?: false): Coordinate[]{
+export function generateNeighbours(coord: Coordinate, diagonal?: false): Coordinate[] {
     const x_diff = [0, 0, 1, -1];
     const y_diff = [1, -1, 0, 0];
 
-    if(diagonal){
+    if (diagonal) {
         x_diff.push(1, -1, 1, -1);
         y_diff.push(1, -1, -1, 1);
     }
 
     const neighbors: Coordinate[] = [];
-    for (let i = 0; i < x_diff.length; i++){
+    for (let i = 0; i < x_diff.length; i++) {
         const x = coord.x + x_diff[i];
         const y = coord.y + y_diff[i];
         neighbors.push({x, y});
@@ -93,7 +56,7 @@ export function generateNeighbours(coord: Coordinate, diagonal?: false): Coordin
     return neighbors;
 }
 
-export function buildPath(previous: number[], grid: any[][], target: Coordinate): Coordinate[]{
+export function buildPath(previous: number[], grid: any[][], target: Coordinate): Coordinate[] {
 
     // Initialize the current node and the result array
     let current = coordinateIndex({x: target.x, y: target.y}, grid);
@@ -106,11 +69,11 @@ export function buildPath(previous: number[], grid: any[][], target: Coordinate)
     let iteration_counter = 0;
     let max_iteration = previous.length;
 
-    while(previous[current] != -1){
+    while (previous[current] != -1) {
 
         // Defensive coding in case there is a problem with the "previous" input array to prevent infinite looping
         iteration_counter++;
-        if(iteration_counter > max_iteration) {
+        if (iteration_counter > max_iteration) {
             console.log("Something is wrong with the buildShortestPath input, looks like we are stuck in an infinite loop");
             return [];
         }

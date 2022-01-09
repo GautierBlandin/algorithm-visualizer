@@ -1,11 +1,10 @@
 import {
-    buildPath,
     CellState,
     Coordinate,
-    coordinateIndex, generateNeighbours,
     GridExplorationRequest,
-    GridExplorationResult, isCoordinateValid
-} from "../grid.interface";
+    GridExplorationResult
+} from "../grid-explorer.interfaces";
+import {buildPath, coordinateIndex, generateNeighbours, isCoordinateValid} from "../grid-exploration-utils";
 
 export function breadthFirstSearch(req: GridExplorationRequest): GridExplorationResult {
     const {grid, start, target} = req;

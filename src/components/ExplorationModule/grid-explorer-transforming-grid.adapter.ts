@@ -1,5 +1,5 @@
-import {CellState, GridExplorationResult} from "../grid-exploration/grid.interface";
-import {Step, Transformation, TransformingGrid} from "./TransformingGridRenderer/transforming-grid-renderer.interface";
+import {CellState, GridExplorationResult} from "../../grid-exploration/grid-explorer.interfaces";
+import {Step, Transformation, TransformingGrid} from "../TransformingGridRenderer/transforming-grid-renderer.interface";
 
 export enum CellRenderingState {
     EMPTY,
@@ -100,32 +100,5 @@ export function explorationResultToTransformingGrid({
     return {
         initialState,
         steps
-    }
-}
-
-export function renderingStateToColor(state: CellRenderingState): string {
-    switch (state) {
-        case CellRenderingState.EMPTY:
-            return '#fff';
-        case CellRenderingState.BLOCKED:
-            return '#5c5b54';
-        case CellRenderingState.PATH:
-            return '#00a619';
-        case CellRenderingState.VISITED:
-            return '#f1d416';
-        case CellRenderingState.START:
-            return '#1beab9';
-        case CellRenderingState.TARGET:
-            return '#053375';
-        case CellRenderingState.VISITED_START:
-            return '#c8e50a';
-        case CellRenderingState.VISITED_TARGET:
-            return '#cb880b';
-        case CellRenderingState.PATH_START:
-            return '#15d731';
-        case CellRenderingState.PATH_TARGET:
-            return '#035e11';
-        default:
-            return '#fff';
     }
 }

@@ -13,15 +13,26 @@ export interface GridRendererProps {
         color: string;
     }
     onSquareClick?: (x: number, y: number) => void;
+    onSquareEnter?: (x: number, y: number) => void;
+    onSquareMouseDown?: (x: number, y: number) => void;
 }
 
-export default function GridRenderer({colorMatrix, squareSize, borderColor = 'black', onSquareClick}: GridRendererProps){
+export default function GridRenderer({
+    colorMatrix,
+    squareSize,
+    borderColor = 'black',
+    onSquareClick,
+    onSquareEnter,
+    onSquareMouseDown
+}: GridRendererProps){
     return(
         <GridRendererProvider
             squareSize = {squareSize}
             borderColor={borderColor}
             colorMatrix={colorMatrix}
             onSquareClick={onSquareClick}
+            onSquareEnter={onSquareEnter}
+            onSquareMouseDown={onSquareMouseDown}
         >
             <div className="grid">
                 {colorMatrix.map((row, rowIndex) => (
