@@ -5,9 +5,10 @@ import {useEffect, useState} from "react";
 export interface TransformingGridRendererProps {
     transformingGrid: TransformingGrid
     stateColorInterpreter: (state: number) => string;
+    squareSize: number;
 }
 
-export default function TransformingGridRenderer({transformingGrid, stateColorInterpreter}: TransformingGridRendererProps){
+export default function TransformingGridRenderer({transformingGrid, stateColorInterpreter, squareSize}: TransformingGridRendererProps){
     const [currentStateMatrix, setCurrentStateMatrix] = useState<number[][]>(JSON.parse(JSON.stringify(transformingGrid.initialState)));
     const [currentStepNumber, setCurrentStepNumber] = useState<number>(0);
     const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -70,7 +71,7 @@ export default function TransformingGridRenderer({transformingGrid, stateColorIn
         <div>
             <GridRenderer
                 colorMatrix={stateMatrixToColorMatrix(currentStateMatrix)}
-                squareSize={40}
+                squareSize={squareSize}
                 onSquareClick={(x, y) => {console.log(`x: ${x}, y:${y}`)}}
             />
             <button onClick={toggleRunning}>Play/Pause</button>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { GridRendererContext } from "./GridRenderer.context";
+import { GridRendererContext } from "./grid-renderer.context";
 
 export interface GridRendererProviderProps{
     squareSize: number;

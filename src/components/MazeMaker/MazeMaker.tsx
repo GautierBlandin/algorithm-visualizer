@@ -21,11 +21,11 @@ export default function MazeMaker({
     initialValues
 }: MazeMakerProps){
 
-    const [grid, setGrid] = useState<MazeNodeState[][]>(initialValues?.grid ?? generateMatrix<MazeNodeState>(MazeNodeState.EMPTY, 10, 10));
+    const [grid, setGrid] = useState<MazeNodeState[][]>(initialValues?.grid ?? generateMatrix<MazeNodeState>(MazeNodeState.EMPTY, 20, 40));
     const [start, setStart] = useState<Coordinate>(initialValues?.start ?? {row: 4, col: 8});
     const [target, setTarget] = useState<Coordinate>(initialValues?.target?? {row: 3, col: 2});
-    const [gridCols, setGridCols] = useState<number>(10);
-    const [gridRows, setGridRows] = useState<number>(10);
+    const [gridRows, setGridRows] = useState<number>(20);
+    const [gridCols, setGridCols] = useState<number>(40);
     const [placingType, setPlacingType] = useState<MazeNodeState>(MazeNodeState.BLOCKED);
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
 

@@ -46,7 +46,9 @@ export default function GridRenderer({
                             height: ${squareSize * colorMatrix.length}px;
                             align-items: flex-start;
                         }
+                        
                     `}
+
                 </style>
             </div>
         </GridRendererProvider>

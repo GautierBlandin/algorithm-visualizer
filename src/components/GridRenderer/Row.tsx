@@ -1,6 +1,6 @@
 import {useContext} from 'react';
 import Square from "./Square";
-import {GridRendererContext} from "./context/GridRenderer.context";
+import {GridRendererContext} from "./context/grid-renderer.context";
 
 export interface RowProps {
     colorRow: string[];
