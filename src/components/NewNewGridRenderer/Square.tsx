@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from "styled-components";
 
 export interface SquareProps {
-    state: number;
+    stateRef: React.MutableRefObject<number>;
     stateToColor: (state: number) => string;
     onClick?: () => void;
     onMouseDown?: () => void;
@@ -23,17 +23,17 @@ const SquareDiv = styled.div<SquareDivProps>`
 `
 
 export default function Square({
-    state,
+    stateRef,
     stateToColor,
     onClick,
     onMouseDown,
     onMouseEnter
 }: SquareProps){
-    const [backgroundColor, setBackgroundColor] = useState<string>(stateToColor(state));
+    const [backgroundColor, setBackgroundColor] = useState<string>(stateToColor(stateRef.current));
 
     useEffect(() => {
-        setBackgroundColor(stateToColor(state));
-    }, [state]);
+        setBackgroundColor(stateToColor(stateRef.current));
+    }, [stateRef.current]);
 
     return(
         <SquareDiv
