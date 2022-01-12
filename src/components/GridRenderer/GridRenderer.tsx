@@ -1,5 +1,6 @@
 import Row from "./Row";
 import GridRendererProvider from "./context/GridRenderer.provider";
+import styled from "styled-components";
 
 export interface GridRendererProps {
     colorMatrix: string[][];
@@ -16,6 +17,18 @@ export interface GridRendererProps {
     onSquareEnter?: (x: number, y: number) => void;
     onSquareMouseDown?: (x: number, y: number) => void;
 }
+
+interface GridInterface {
+    squareSize: number;
+    colorMatrix: string[][];
+}
+
+const Grid = styled.div<GridInterface>`
+  display: flex;
+  flex-direction: column;
+  height: ${(props) => props.squareSize * props.colorMatrix.length}px;
+  align-items: flex-start;
+`
 
 export default function GridRenderer({
     colorMatrix,
@@ -34,23 +47,14 @@ export default function GridRenderer({
             onSquareEnter={onSquareEnter}
             onSquareMouseDown={onSquareMouseDown}
         >
-            <div className="grid">
+            <Grid
+                squareSize = {squareSize}
+                colorMatrix = {colorMatrix}
+            >
                 {colorMatrix.map((row, rowIndex) => (
                     <Row key={rowIndex} colorRow={row} index={rowIndex}/>
                 ))}
-                <style jsx>
-                    {`
-                        .grid {
-                            display: flex;
-                            flex-direction: column;
-                            height: ${squareSize * colorMatrix.length}px;
-                            align-items: flex-start;
-                        }
-                        
-                    `}
-
-                </style>
-            </div>
+            </Grid>
         </GridRendererProvider>
     )
 }

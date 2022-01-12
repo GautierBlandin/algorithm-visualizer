@@ -1,14 +1,36 @@
 import {useContext} from 'react';
 import Square from "./Square";
 import {GridRendererContext} from "./context/grid-renderer.context";
+import styled from "styled-components";
 
 export interface RowProps {
     colorRow: string[];
     index: number;
 }
 
+interface RowDivInterface {
+    squareSize: number;
+    colorRow: string[];
+    borderColor: string;
+}
+
+const RowDiv = styled.div<RowDivInterface>`
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  width: ${(props => props.squareSize * props.colorRow.length)}px;
+  border-top:  1px solid ${(props) => props.borderColor};
+  
+  &:last-child{
+    border-bottom: 1px solid ${(props) => props.borderColor};
+  }
+`
+
 export default function Row({colorRow, index}: RowProps){
+
+
     const gridRendererContext = useContext(GridRendererContext);
+    const borderColor = gridRendererContext.borderColor;
     const colorMatrix = gridRendererContext.colorMatrix;
 
     const hasBottomBorder = (row: number, col: number) => {
@@ -19,7 +41,11 @@ export default function Row({colorRow, index}: RowProps){
     };
 
     return(
-    <div className={`row${index}`}>
+    <RowDiv
+        squareSize = {gridRendererContext.squareSize}
+        colorRow = {colorRow}
+        borderColor = {borderColor}
+    >
         {colorRow.map((color, colIndex) => {
             return <Square
                 key={colIndex}
@@ -30,16 +56,6 @@ export default function Row({colorRow, index}: RowProps){
                 colIndex={colIndex}
             />
         })}
-        <style>
-            {`
-                .row${index} {
-                    display: flex;
-                    flex-direction: row;
-                    flex-grow: 1;
-                    width: ${gridRendererContext.squareSize * colorRow.length}px;
-                }
-            `}
-        </style>
-    </div>
+    </RowDiv>
     )
 }
