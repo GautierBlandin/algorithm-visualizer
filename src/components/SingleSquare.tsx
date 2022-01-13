@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from "styled-components";
 
 export interface SingleSquareProps {
     color: string;
@@ -7,21 +8,31 @@ export interface SingleSquareProps {
     size: number;
 }
 
+interface SingleSquareDivInterface {
+    color: string;
+    size: number;
+    borderColor: string | undefined;
+    clickable: boolean;
+}
+
+const SingleSquareDiv = styled.div<SingleSquareDivInterface>`
+    background-color: ${props => props.color};
+    height: ${props => props.size}px;
+    width: ${props => props.size}px;
+    ${props => props.borderColor ? `border: 1px solid ${props.borderColor};`: ''}
+    ${props => props.clickable ? `cursor: pointer;` : ''}
+`
+
 export default function SingleSquare({color, onClick, size, borderColor}: SingleSquareProps){
     return(
-    <div onClick={onClick} className={'square'}>
-        <style jsx>
-            {`
-                .square {
-                background-color: ${color};
-                height: ${size}px;
-                width: ${size}px;
-                ${borderColor ? `border: 1px solid ${borderColor};`: ''}
-                ${onClick? `cursor: pointer;` : ''}
-                }
-            `}
-        </style>
-    </div>
+    <SingleSquareDiv
+        color = {color}
+        size = {size}
+        borderColor = {borderColor}
+        clickable = {!!onClick}
+        onClick={onClick}
+        className={'square'}>
+    </SingleSquareDiv>
     )
 
 }
