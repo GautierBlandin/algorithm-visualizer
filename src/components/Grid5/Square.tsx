@@ -2,16 +2,6 @@ import React, { useEffect, useState } from 'react';
 import styled from "styled-components";
 import {generateColorChangeTransition} from "./color-transition-animation";
 
-export interface SquareProps {
-    stateRef: React.MutableRefObject<number>;
-    stateToColor: (state: number) => string;
-    onClick?: () => void;
-    onMouseDown?: () => void;
-    onMouseEnter?: () => void;
-    newStateType?: number;
-    shouldUpdate?: boolean;
-}
-
 interface SquareDivProps {
     color: string;
     nextColor: string | undefined;
@@ -33,24 +23,24 @@ const SquareDiv = styled.div<SquareDivProps>`
   }
 `
 
+export interface SquareProps {
+    state: number;
+    stateToColor: (state: number) => string;
+    onClick?: () => void;
+    onMouseDown?: () => void;
+    onMouseEnter?: () => void;
+}
+
 export default function Square({
-    stateRef,
+    state,
     stateToColor,
     onClick,
     onMouseDown,
     onMouseEnter,
-    newStateType,
-    shouldUpdate,
 }: SquareProps){
-    const [backgroundColor, setBackgroundColor] = useState<string>(stateToColor(stateRef.current));
+    const [backgroundColor, setBackgroundColor] = useState<string>(stateToColor(state));
     const [nextColor, setNextColor] = useState<string | undefined>(undefined);
-    const [state, setState] = useState<number>(stateRef.current);
-    const [currentState, setCurrentState] = useState<number>(stateRef.current);
-
-    useEffect(() => {
-        setState(stateRef.current);
-    }, [stateRef.current]);
-
+    const [currentState, setCurrentState] = useState<number>(state);
 
     useEffect(() => {
         if(state !== currentState){
@@ -61,16 +51,12 @@ export default function Square({
     }, [state]);
 
     return(
-        <SquareDiv
+        <SquareDiv // Styled component
             color = {backgroundColor}
             nextColor = {nextColor}
             animationDurationMs={300}
-            onMouseDown = {() => {if(onMouseDown){onMouseDown();
-                if(newStateType) setState(newStateType)}}}
-            onMouseEnter = {() => {
-            if(onMouseEnter) {
-                onMouseEnter();
-                if(shouldUpdate) setState(newStateType ?? 0)}}}
+            onMouseDown = {() => {if(onMouseDown){onMouseDown();}}}
+            onMouseEnter = {() => {if(onMouseEnter) {onMouseEnter(); }}}
             onClick = {onClick}
         />
     )

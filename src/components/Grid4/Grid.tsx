@@ -36,6 +36,8 @@ const Row = styled.div`
 `
 
 export default function Grid({
+    rows,
+    cols,
     stateRefMatrix,
     stateToColor,
     onSquareClick,
@@ -47,21 +49,21 @@ export default function Grid({
 
     return(
             <GridDiv
-                rows = {stateRefMatrix.length}
-                cols = {stateRefMatrix[0].length}
+                rows = {rows}
+                cols = {cols}
             >
                 {
-                    stateRefMatrix.map((_, rowIndex) => <Row key = {rowIndex}>
-                        {stateRefMatrix[rowIndex].map((_, colIndex) =>
+                    Array.from({length: rows}).map((_, rowIndex) => <Row key={rowIndex}>
+                        {Array.from({length: cols}).map((_, colIndex) =>
                             <Square
-                                key={rowIndex * stateRefMatrix[0].length + colIndex}
-                                stateRef={stateRefMatrix[rowIndex][colIndex]}
-                                stateToColor={stateToColor}
-                                onClick={() => {if(onSquareClick) onSquareClick(rowIndex, colIndex)}}
-                                onMouseEnter={() => {if(onSquareMouseEnter) onSquareMouseEnter(rowIndex, colIndex)}}
-                                onMouseDown={() => {if(onSquareMouseDown) onSquareMouseDown(rowIndex, colIndex)}}
-                                newStateType={newStateType}
-                                shouldUpdate={shouldUpdate}
+                            key={rowIndex * rows + colIndex}
+                            stateRef={stateRefMatrix[rowIndex][colIndex]}
+                            stateToColor={stateToColor}
+                            onClick={() => {if(onSquareClick) onSquareClick(rowIndex, colIndex)}}
+                            onMouseEnter={() => {if(onSquareMouseEnter) onSquareMouseEnter(rowIndex, colIndex)}}
+                            onMouseDown={() => {if(onSquareMouseDown) onSquareMouseDown(rowIndex, colIndex)}}
+                            newStateType={newStateType}
+                            shouldUpdate={shouldUpdate}
                             />)}
                     </Row>)
                 }
