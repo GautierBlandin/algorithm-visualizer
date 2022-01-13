@@ -1,6 +1,7 @@
 import React, {useEffect, useImperativeHandle, useState} from 'react';
 import styled from "styled-components";
 import {generateColorChangeTransition} from "./color-transition-animation";
+import AnimatedSquare from "../AnimatedSquare/AnimatedSquare";
 
 export interface SquareProps {
     initialState: number;
