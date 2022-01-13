@@ -1,6 +1,7 @@
 import {Step, TransformingGrid} from "./transforming-grid-renderer.interface";
 import GridRenderer from "../GridRenderer/GridRenderer";
-import {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
+import Grid from "../NewNewGridRenderer/Grid";
 
 export interface TransformingGridRendererProps {
     transformingGrid: TransformingGrid
@@ -9,6 +10,7 @@ export interface TransformingGridRendererProps {
 }
 
 export default function TransformingGridRenderer({transformingGrid, stateColorInterpreter, squareSize}: TransformingGridRendererProps){
+    const stateRefMatrix: React.MutableRefObject<number>[][] = transformingGrid.initialState.map(row => row.map(value => useRef(value)))
     const [currentStateMatrix, setCurrentStateMatrix] = useState<number[][]>(JSON.parse(JSON.stringify(transformingGrid.initialState)));
     const [currentStepNumber, setCurrentStepNumber] = useState<number>(0);
     const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -27,6 +29,19 @@ export default function TransformingGridRenderer({transformingGrid, stateColorIn
         return stateMatrix;
     }
 
+    const makeStep2 = (stateRefMatrix: React.MutableRefObject<number>[][], step: Step) => {
+        step.transformations.forEach(transformation => {
+            stateRefMatrix[transformation.row][transformation.col].current = transformation.newSquareState;
+        })
+    }
+    // Make step using the component's current state.
+    const executeStep2 = () => {
+        if (currentStepNumber < transformingGrid.steps.length) {
+            makeStep2(stateRefMatrix, transformingGrid.steps[currentStepNumber]);
+        }
+    }
+
+
     // Make step using the component's current state.
     const executeStep = () => {
         if (currentStepNumber < transformingGrid.steps.length) {
@@ -37,6 +52,7 @@ export default function TransformingGridRenderer({transformingGrid, stateColorIn
     // When the currentStepNumber changes, execute the new current step
     useEffect(() => {
         executeStep();
+        executeStep2();
     }, [currentStepNumber]);
 
     const toggleRunning = () => {
@@ -47,7 +63,7 @@ export default function TransformingGridRenderer({transformingGrid, stateColorIn
         if(running) {
             console.log("clearing and setting new interval");
             if(intervalId) clearInterval(intervalId);
-            setIntervalId(setInterval(() => setCurrentStepNumber(p => p + 1), 100));
+            setIntervalId(setInterval(() => setCurrentStepNumber(p => p + 1), 80));
         } else {
             console.log("clearing interval")
             if(intervalId) clearInterval(intervalId);
@@ -69,13 +85,11 @@ export default function TransformingGridRenderer({transformingGrid, stateColorIn
 
     return(
         <div>
-            <GridRenderer
-                colorMatrix={stateMatrixToColorMatrix(currentStateMatrix)}
-                squareSize={squareSize}
-                onSquareClick={(x, y) => {console.log(`x: ${x}, y:${y}`)}}
+            <Grid
+                stateRefMatrix={stateRefMatrix}
+                stateToColor={stateColorInterpreter}
             />
             <button onClick={toggleRunning}>Play/Pause</button>
-            <button onClick = {reset}>reset</button>
         </div>
     )
 }

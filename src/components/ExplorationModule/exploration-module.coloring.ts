@@ -1,4 +1,4 @@
-import {MazeNodeState} from "../MazeMaker/maze-maker.interface";
+import {MazeNodeState} from "../ImperativeMazeMaker/maze-maker.interface";
 import {CellRenderingState} from "./grid-explorer-transforming-grid.adapter";
 
 export function mazeStateToColor(state: MazeNodeState) {

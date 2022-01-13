@@ -5,8 +5,8 @@ import Square from "./Square";
 export interface GridProps {
     stateRefMatrix: React.MutableRefObject<number>[][];
     stateToColor: (state: number) => string;
-    rows: number;
-    cols: number;
+    rows?: number;
+    cols?: number;
     onSquareClick?: (x: number, y: number) => void;
     onSquareMouseDown?: (x: number, y: number) => void;
     onSquareMouseEnter?: (x: number, y: number) => void;
@@ -44,6 +44,8 @@ export default function Grid({
     newStateType,
     shouldUpdate,
 }: GridProps){
+    const rows = stateRefMatrix.length;
+    const cols = stateRefMatrix[0].length;
 
     return(
             <GridDiv

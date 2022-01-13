@@ -32,4 +32,3 @@ export enum CellState{
     BLOCKED,
     TARGET
 }
-

@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useImperativeHandle, useState} from 'react';
 import styled from "styled-components";
 import {generateColorChangeTransition} from "./color-transition-animation";
 
 export interface SquareProps {
-    stateRef: React.MutableRefObject<number>;
+    initialState: number;
     stateToColor: (state: number) => string;
     onClick?: () => void;
     onMouseDown?: () => void;
     onMouseEnter?: () => void;
     newStateType?: number;
     shouldUpdate?: boolean;
+}
+
+export interface SquareRef {
+    updateState: (state: number) => void;
 }
 
 interface SquareDivProps {
@@ -24,33 +28,30 @@ const SquareDiv = styled.div<SquareDivProps>`
   border-left: 1px solid black;
   animation: ${({color, nextColor}) => {if (nextColor && (nextColor !== color)){
     return generateColorChangeTransition(color, nextColor)
-  } else {
+} else {
     return 'none'
-  }
-  }} ${({animationDurationMs}) => animationDurationMs}ms both;
+}
+}} ${({animationDurationMs}) => animationDurationMs}ms both;
   &:last-child {
     border-right: 1px solid black;
   }
 `
 
-export default function Square({
-    stateRef,
+const Square = React.forwardRef<SquareRef, SquareProps>((({
+    initialState,
     stateToColor,
     onClick,
     onMouseDown,
     onMouseEnter,
-    newStateType,
-    shouldUpdate,
-}: SquareProps){
-    const [backgroundColor, setBackgroundColor] = useState<string>(stateToColor(stateRef.current));
+    }, ref) => {
+    const [backgroundColor, setBackgroundColor] = useState<string>(stateToColor(initialState));
     const [nextColor, setNextColor] = useState<string | undefined>(undefined);
-    const [state, setState] = useState<number>(stateRef.current);
-    const [currentState, setCurrentState] = useState<number>(stateRef.current);
+    const [state, setState] = useState<number>(initialState);
+    const [currentState, setCurrentState] = useState<number>(initialState);
 
-    useEffect(() => {
-        setState(stateRef.current);
-    }, [stateRef.current]);
-
+    const updateState = (state: number) => {
+        setState(state);
+    }
 
     useEffect(() => {
         if(state !== currentState){
@@ -60,18 +61,18 @@ export default function Square({
         setCurrentState(state);
     }, [state]);
 
+    useImperativeHandle(ref, () => ({updateState}), [])
+
     return(
         <SquareDiv
             color = {backgroundColor}
             nextColor = {nextColor}
             animationDurationMs={300}
-            onMouseDown = {() => {if(onMouseDown){onMouseDown();
-                if(newStateType) setState(newStateType)}}}
-            onMouseEnter = {() => {
-            if(onMouseEnter) {
-                onMouseEnter();
-                if(shouldUpdate) setState(newStateType ?? 0)}}}
+            onMouseDown = {() => {if(onMouseDown){ onMouseDown(); }}}
+            onMouseEnter = {() => {if(onMouseEnter) { onMouseEnter();}}}
             onClick = {onClick}
         />
     )
-}
+}))
+
+export default Square;

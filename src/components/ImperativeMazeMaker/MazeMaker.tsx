@@ -2,20 +2,20 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Coordinate, MazeMakingResult, MazeNodeState} from "./maze-maker.interface";
 import SingleSquare from "../SingleSquare";
 import {generateMatrix} from "../../utils/matrix-generation";
-import Grid3 from "../Grid3/Grid3";
+import Grid, { GridRef } from "../ImperativeGrid/Grid";
 
 export interface MazeMakerProps {
     stateToColorInterpreter: (state: MazeNodeState) => string;
-    getGenerationResult: (result: MazeMakingResult) => void;
     squareSize: number;
     initialValues?: MazeMakingResult;
+    generationResultFetcher: React.MutableRefObject<{fetch: () => MazeMakingResult | void}>;
 }
 
-export default function MazeMaker3({
+export default function MazeMaker({
     stateToColorInterpreter,
-    getGenerationResult,
     squareSize,
-    initialValues
+    initialValues,
+    generationResultFetcher
 }: MazeMakerProps){
 
     const initialStart = initialValues?.start ?? {row: 4, col: 8};
@@ -24,52 +24,67 @@ export default function MazeMaker3({
     initialGrid[initialStart.row][initialStart.col] = MazeNodeState.START;
     initialGrid[initialTarget.row][initialTarget.col] = MazeNodeState.TARGET;
 
-    const [stateMatrix, setStateMatrix] = useState<React.MutableRefObject<MazeNodeState>[][]>(initialGrid.map(row => row.map(state => useRef(state))));
-    const [start, setStart] = useState<Coordinate>(initialStart);
-    const [target, setTarget] = useState<Coordinate>(initialTarget);
+    const stateMatrix: React.MutableRefObject<number[][]> = useRef(JSON.parse(JSON.stringify(initialGrid)));
+    const start = useRef<Coordinate>(initialStart);
+    const target = useRef<Coordinate>(initialTarget);
     const [gridRows, setGridRows] = useState<number>(20);
     const [gridCols, setGridCols] = useState<number>(40);
     const [placingType, setPlacingType] = useState<MazeNodeState>(MazeNodeState.BLOCKED);
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
-    const [updater, setUpdater] = useState<boolean>(false);
 
-    const forceUpdate = () => setUpdater(!updater);
+    const gridRef: React.MutableRefObject<GridRef | null> = useRef(null);
+
+    useEffect(() => {
+        generationResultFetcher.current.fetch = () => ({
+            grid: stateMatrix.current.map(row => row.map(value => value)),
+            start: start.current,
+            target: target.current,
+        })
+    }, []);
 
     // Set a square state in the generated grid based on passed coords and state.
     const setSquareState = (coord: Coordinate, state: MazeNodeState) => {
-        if(coord.row < stateMatrix.length && coord.col < stateMatrix[0].length){
+        // Prevent updating the state of the current start or target
+        if(coord.row < stateMatrix.current.length && coord.col < stateMatrix.current[0].length){
+            if((start.current.row == coord.row && start.current.col == coord.col) || (target.current.row == coord.row && target.current.col == coord.col)){
+                return
+            }
+
             switch(state) {
+                // The start and target squares should be unique, so their current square gets set to empty
+                // before they are updated
                 case MazeNodeState.START:
-                    stateMatrix[start.row][start.col].current = MazeNodeState.EMPTY;
-                    setStart(coord);
-                    stateMatrix[coord.row][coord.col].current = state;
+                    stateMatrix.current[start.current.row][start.current.col] = MazeNodeState.EMPTY;
+                    gridRef.current?.updateSquareState(start.current.row, start.current.col, MazeNodeState.EMPTY);
+                    start.current = coord;
                     break;
                 case MazeNodeState.TARGET:
-                    stateMatrix[target.row][target.col].current = MazeNodeState.EMPTY;
-                    setTarget(coord);
-                    stateMatrix[coord.row][coord.col].current = state;
+                    stateMatrix.current[target.current.row][target.current.col] = MazeNodeState.EMPTY;
+                    gridRef.current?.updateSquareState(target.current.row, target.current.col, MazeNodeState.EMPTY);
+                    target.current = coord;
                     break;
                 default:
-                    stateMatrix[coord.row][coord.col].current = state;
                     break;
             }
+            // Update the rendering view and the state matrix
+            gridRef.current?.updateSquareState(coord.row, coord.col, state);
+            stateMatrix.current[coord.row][coord.col] = state;
         }
-        forceUpdate();
     }
 
     // Update the size of the grid when requested
     useEffect(() => {
-        if(start.row >= gridRows) {
-            start.row = gridRows - 1;
+        if(start.current.row >= gridRows) {
+            start.current.row = gridRows - 1;
         }
-        if(start.col >= gridCols) {
-            start.col = gridCols - 1;
+        if(start.current.col >= gridCols) {
+            start.current.col = gridCols - 1;
         }
-        if(target.row >= gridRows) {
-            target.row = gridRows - 1;
+        if(target.current.row >= gridRows) {
+            target.current.row = gridRows - 1;
         }
-        if(target.col >= gridCols) {
-            target.col = gridCols - 1;
+        if(target.current.col >= gridCols) {
+            target.current.col = gridCols - 1;
         }
         // Change the size of the grid and copy the current grid the new increased/decreased grid.
         // TODO : Make the new grid
@@ -80,14 +95,13 @@ export default function MazeMaker3({
          onMouseLeave={() => setIsMouseDown(false)}
          onMouseUp={() => setIsMouseDown(false)}
     >
-        <Grid3
-            stateMatrix={stateMatrix}
+        <Grid
+            initialStateMatrix={initialGrid}
             stateToColor={stateToColorInterpreter}
-            rows={gridRows}
-            cols={gridCols}
             onSquareMouseDown = {(x: number, y: number) => {setSquareState({row: x, col: y}, placingType)}}
             onSquareClick = {(x: number, y: number) => {setSquareState({row: x, col: y}, placingType)}}
             onSquareMouseEnter = {(x: number, y: number) => {if(isMouseDown) setSquareState({row: x, col: y}, placingType)}}
+            ref = {gridRef}
         />
         <div>
             <div>

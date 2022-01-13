@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import MazeMaker from "../MazeMaker/MazeMaker";
-import {MazeMakingResult, MazeNodeState} from "../MazeMaker/maze-maker.interface";
+import React, {useEffect, useRef, useState} from 'react';
+import MazeMaker from "../ImperativeMazeMaker/MazeMaker";
+import {MazeMakingResult, MazeNodeState} from "../ImperativeMazeMaker/maze-maker.interface";
 import TransformingGridRenderer from "../TransformingGridRenderer/TransformingGridRenderer";
 import {Algorithms, CellState, ExternalGridExplorationRequest} from "../../grid-exploration/grid-explorer.interfaces";
 import {TransformingGrid} from "../TransformingGridRenderer/transforming-grid-renderer.interface";
@@ -14,13 +14,13 @@ export interface ExplorationModuleProps {
 export default function ExplorationModule({
 }: ExplorationModuleProps){
     const [generatorMode, setGeneratorMode] = useState<boolean>(true);
-    const [generatedGrid, setGeneratedGrid] = useState<MazeMakingResult | undefined>(undefined)
+    const [generationResult, setGenerationResult] = useState<MazeMakingResult | undefined>(undefined)
     const [explorationAlgorithm, setExplorationAlgorithm] = useState<Algorithms>(Algorithms.BFS);
     const [transformingGrid, setTransformingGrid] = useState<TransformingGrid | undefined>(undefined);
 
-    const getGenerationResult = (result: MazeMakingResult) => {
-        setGeneratedGrid(result);
-    }
+    const generationResultFetcher = useRef<{fetch: () => MazeMakingResult | void}>({
+        fetch: () => {}
+    })
 
     function mazeStateToCellState(squareState: MazeNodeState): CellState {
         switch(squareState){
@@ -48,11 +48,15 @@ export default function ExplorationModule({
         if(generatorMode){
             setTransformingGrid(undefined);
         }
-        if(!generatorMode && generatedGrid) {
-            const externalExplorationRequest = generateExplorationRequest(explorationAlgorithm, generatedGrid);
-            const explorationResult = exploreGrid(externalExplorationRequest);
-            const transformingGrid = explorationResultToTransformingGrid(explorationResult);
-            setTransformingGrid(transformingGrid);
+        if(!generatorMode) {
+            const generationResult = generationResultFetcher.current.fetch();
+            if(generationResult) {
+                setGenerationResult(generationResult);
+                const externalExplorationRequest = generateExplorationRequest(explorationAlgorithm, generationResult);
+                const explorationResult = exploreGrid(externalExplorationRequest);
+                const transformingGrid = explorationResultToTransformingGrid(explorationResult);
+                setTransformingGrid(transformingGrid);
+            }
         }
     }, [generatorMode]);
 
@@ -63,9 +67,9 @@ export default function ExplorationModule({
         { generatorMode && <button onClick={() => {setExplorationAlgorithm(Algorithms.DFS)}}>DFS</button> }
         { generatorMode && <MazeMaker
             stateToColorInterpreter= {mazeStateToColor}
-            getGenerationResult = {getGenerationResult}
+            generationResultFetcher={generationResultFetcher}
             squareSize={30}
-            initialValues={generatedGrid}
+            initialValues={generationResult}
         /> }
         {
             (transformingGrid && !generatorMode) && <TransformingGridRenderer
