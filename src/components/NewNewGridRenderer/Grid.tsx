@@ -10,6 +10,8 @@ export interface GridProps {
     onSquareClick?: (x: number, y: number) => void;
     onSquareMouseDown?: (x: number, y: number) => void;
     onSquareMouseEnter?: (x: number, y: number) => void;
+    newStateType?: number;
+    shouldUpdate?: boolean;
 }
 
 interface GridDivInterface{
@@ -40,7 +42,9 @@ export default function Grid({
     stateToColor,
     onSquareClick,
     onSquareMouseEnter,
-    onSquareMouseDown
+    onSquareMouseDown,
+    newStateType,
+    shouldUpdate,
 }: GridProps){
 
     return(
@@ -52,12 +56,14 @@ export default function Grid({
                     Array.from({length: rows}).map((_, rowIndex) => <Row key={rowIndex}>
                         {Array.from({length: cols}).map((_, colIndex) =>
                             <Square
-                            key={colIndex}
+                            key={rowIndex * rows + colIndex}
                             stateRef={stateRefMatrix[rowIndex][colIndex]}
                             stateToColor={stateToColor}
                             onClick={() => {if(onSquareClick) onSquareClick(rowIndex, colIndex)}}
                             onMouseEnter={() => {if(onSquareMouseEnter) onSquareMouseEnter(rowIndex, colIndex)}}
                             onMouseDown={() => {if(onSquareMouseDown) onSquareMouseDown(rowIndex, colIndex)}}
+                            newStateType={newStateType}
+                            shouldUpdate={shouldUpdate}
                             />)}
                     </Row>)
                 }

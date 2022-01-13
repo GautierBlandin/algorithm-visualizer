@@ -84,6 +84,8 @@ export default function MazeMaker({
             onSquareMouseDown = {(x: number, y: number) => {setSquareState({row: x, col: y}, placingType)}}
             onSquareClick = {(x: number, y: number) => {setSquareState({row: x, col: y}, placingType)}}
             onSquareMouseEnter = {(x: number, y: number) => {if(isMouseDown) setSquareState({row: x, col: y}, placingType)}}
+            newStateType={placingType}
+            shouldUpdate={isMouseDown}
         />
         <div>
             <div>

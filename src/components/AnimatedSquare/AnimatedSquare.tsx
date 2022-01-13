@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import styled from "styled-components";
-import { generateColorChangeTransition } from "./color-transition-animation";
+import { generateColorChangeTransition } from "../NewNewGridRenderer/color-transition-animation";
 
 export interface AnimatedSquareProps {
     color: string;

@@ -4,20 +4,12 @@ export function generateColorChangeTransition(initialColor: string, finalColor: 
     return keyframes`
         0% {
             background-color: ${initialColor};
+              transform: scale(0.5);
         }
-
-      33% {
-        border-radius: 100px;
-        transform: scale(0.5);
-      }
-
-      66% {
-        border-radius: 100px;
-        transform: scale(1.5);
-      }
 
         100% {
             background-color: ${finalColor};
+          transform: scale(1);
         }
     `
 }

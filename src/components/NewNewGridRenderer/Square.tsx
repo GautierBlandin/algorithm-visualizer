@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from "styled-components";
+import {generateColorChangeTransition} from "./color-transition-animation";
+import {color} from "@mui/system";
 
 export interface SquareProps {
     stateRef: React.MutableRefObject<number>;
@@ -7,16 +9,26 @@ export interface SquareProps {
     onClick?: () => void;
     onMouseDown?: () => void;
     onMouseEnter?: () => void;
+    newStateType?: number;
+    shouldUpdate?: boolean;
 }
 
 interface SquareDivProps {
     color: string;
+    nextColor: string | undefined;
+    animationDurationMs: number;
 }
 
 const SquareDiv = styled.div<SquareDivProps>`
   flex-grow: 1;
   background-color: ${props => props.color};
   border-left: 1px solid black;
+  animation: ${({color, nextColor}) => {if (nextColor && (nextColor !== color)){
+    return generateColorChangeTransition(color, nextColor)
+  } else {
+    return 'none'
+  }
+  }} ${({animationDurationMs}) => animationDurationMs}ms both;
   &:last-child {
     border-right: 1px solid black;
   }
@@ -27,20 +39,39 @@ export default function Square({
     stateToColor,
     onClick,
     onMouseDown,
-    onMouseEnter
+    onMouseEnter,
+    newStateType,
+    shouldUpdate,
 }: SquareProps){
     const [backgroundColor, setBackgroundColor] = useState<string>(stateToColor(stateRef.current));
+    const [nextColor, setNextColor] = useState<string | undefined>(undefined);
+    const [state, setState] = useState<number>(stateRef.current);
+    const [currentState, setCurrentState] = useState<number>(stateRef.current);
 
     useEffect(() => {
-        setBackgroundColor(stateToColor(stateRef.current));
+        setState(stateRef.current);
     }, [stateRef.current]);
+
+
+    useEffect(() => {
+        if(state !== currentState){
+            if(nextColor) setBackgroundColor(nextColor);
+            setNextColor(stateToColor(state))
+        }
+        setCurrentState(state);
+    }, [state]);
 
     return(
         <SquareDiv
             color = {backgroundColor}
-            onMouseDown = {onMouseDown}
-            onMouseEnter = {() => {console.log("mouse entered");
-            if(onMouseEnter) onMouseEnter()}}
+            nextColor = {nextColor}
+            animationDurationMs={300}
+            onMouseDown = {() => {if(onMouseDown){onMouseDown();
+                if(newStateType) setState(newStateType)}}}
+            onMouseEnter = {() => {
+            if(onMouseEnter) {
+                onMouseEnter();
+                if(shouldUpdate) setState(newStateType ?? 0)}}}
             onClick = {onClick}
         />
     )
