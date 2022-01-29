@@ -7,6 +7,7 @@ import {TransformingGrid} from "../TransformingGridRenderer/transforming-grid-re
 import {explorationResultToTransformingGrid} from "./grid-explorer-transforming-grid.adapter";
 import {exploreGrid} from "../../grid-exploration/grid-explorer";
 import {renderingStateToColor, mazeStateToColor} from "./exploration-module.coloring";
+import {Box, Button} from "@mui/material";
 
 export interface ExplorationModuleProps {
 }
@@ -61,10 +62,19 @@ export default function ExplorationModule({
     }, [generatorMode]);
 
     return(
-    <div>
-        <button onClick={() => {setGeneratorMode(!generatorMode)}}>Toggle generation mode</button>
-        { generatorMode && <button onClick={() => {setExplorationAlgorithm(Algorithms.BFS)}}>BFS</button> }
-        { generatorMode && <button onClick={() => {setExplorationAlgorithm(Algorithms.DFS)}}>DFS</button> }
+    <Box sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2
+    }}>
+        <Box sx={{
+            display: 'flex',
+            gap: 2
+        }}>
+            <Button variant={'contained'} onClick={() => {setGeneratorMode(!generatorMode)}}>Toggle generation mode</Button>
+            { generatorMode && <Button variant={'contained'} onClick={() => {setExplorationAlgorithm(Algorithms.BFS)}}>BFS</Button> }
+            { generatorMode && <Button variant={'contained'} onClick={() => {setExplorationAlgorithm(Algorithms.DFS)}}>DFS</Button> }
+        </Box>
         { generatorMode && <MazeMaker
             stateToColorInterpreter= {mazeStateToColor}
             generationResultFetcher={generationResultFetcher}
@@ -78,6 +88,6 @@ export default function ExplorationModule({
             squareSize={30}
             />
         }
-    </div>
+    </Box>
     )
 }

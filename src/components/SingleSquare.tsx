@@ -19,8 +19,9 @@ const SingleSquareDiv = styled.div<SingleSquareDivInterface>`
     background-color: ${props => props.color};
     height: ${props => props.size}px;
     width: ${props => props.size}px;
-    ${props => props.borderColor ? `border: 1px solid ${props.borderColor};`: ''}
+    ${props => props.borderColor ? `border: 2px solid ${props.borderColor};`: ''}
     ${props => props.clickable ? `cursor: pointer;` : ''}
+    border-radius: 8px;
 `
 
 export default function SingleSquare({color, onClick, size, borderColor}: SingleSquareProps){
