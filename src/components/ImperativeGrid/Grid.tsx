@@ -49,9 +49,7 @@ const Grid = React.forwardRef<GridRef, GridProps>((({
     initialStateMatrix.forEach(() => {refMatrix2.current.push([])});
 
     const updateSquareState = (row: number, col: number, state: number) => {
-        if(refMatrix2.current[row][col] !== null) {
-            refMatrix2.current[row][col]!.updateState(state);
-        }
+            refMatrix2.current[row][col]?.updateState(state);
     }
 
     useImperativeHandle(ref, () => ({updateSquareState}), [])
