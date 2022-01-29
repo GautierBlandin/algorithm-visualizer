@@ -1,4 +1,4 @@
-import React, {useContext, useImperativeHandle, useRef, useState} from 'react';
+import React, {createRef, useContext, useImperativeHandle, useRef, useState} from 'react';
 import styled from "styled-components";
 import Square, { SquareRef } from "./Square";
 
@@ -45,11 +45,12 @@ const Grid = React.forwardRef<GridRef, GridProps>((({
     const rows = initialStateMatrix.length;
     const cols = initialStateMatrix[0].length;
 
-    const refMatrix: React.MutableRefObject<SquareRef | null>[][] = initialStateMatrix.map(row => row.map(state => useRef(null)))
+    const refMatrix2: React.MutableRefObject<SquareRef[][] | null[][]> = useRef([]);
+    initialStateMatrix.forEach(() => {refMatrix2.current.push([])});
 
     const updateSquareState = (row: number, col: number, state: number) => {
-        if(refMatrix[row][col].current) {
-            refMatrix[row][col].current?.updateState(state);
+        if(refMatrix2.current[row][col] !== null) {
+            refMatrix2.current[row][col]!.updateState(state);
         }
     }
 
@@ -70,7 +71,7 @@ const Grid = React.forwardRef<GridRef, GridProps>((({
                             onClick={() => {if(onSquareClick) onSquareClick(rowIndex, colIndex)}}
                             onMouseEnter={() => {if(onSquareMouseEnter) onSquareMouseEnter(rowIndex, colIndex)}}
                             onMouseDown={() => {if(onSquareMouseDown) onSquareMouseDown(rowIndex, colIndex)}}
-                            ref={refMatrix[rowIndex][colIndex]}
+                            ref={el => {refMatrix2.current[rowIndex][colIndex] = el}}
                         />)}
                 </Row>)
             }
@@ -78,4 +79,5 @@ const Grid = React.forwardRef<GridRef, GridProps>((({
     )
 }))
 
+Grid.displayName= 'Grid';
 export default Grid;
