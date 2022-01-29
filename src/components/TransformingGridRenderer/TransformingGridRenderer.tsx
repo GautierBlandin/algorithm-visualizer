@@ -1,6 +1,7 @@
 import {Step, TransformingGrid} from "./transforming-grid-renderer.interface";
 import React, {useEffect, useRef, useState} from "react";
 import Grid, { GridRef } from "../ImperativeGrid/Grid";
+import {Box, Button} from "@mui/material";
 
 export interface TransformingGridRendererProps {
     transformingGrid: TransformingGrid
@@ -54,13 +55,17 @@ export default function TransformingGridRenderer({transformingGrid, stateColorIn
 
 
     return(
-        <div>
+        <Box sx ={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2
+        }}>
             <Grid
                 initialStateMatrix={JSON.parse(JSON.stringify(transformingGrid.initialState))}
                 stateToColor={stateColorInterpreter}
                 ref = {gridRef}
             />
-            <button onClick={toggleRunning}>Play/Pause</button>
-        </div>
+            <Button variant={'contained'} onClick={toggleRunning}>Play/Pause</Button>
+        </Box>
     )
 }
