@@ -76,4 +76,5 @@ const Square = React.forwardRef<SquareRef, SquareProps>((({
     )
 }))
 
+Square.displayName = 'Square';
 export default Square;
