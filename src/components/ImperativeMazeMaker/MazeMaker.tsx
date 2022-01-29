@@ -3,6 +3,7 @@ import {Coordinate, MazeMakingResult, MazeNodeState} from "./maze-maker.interfac
 import SingleSquare from "../SingleSquare";
 import {generateMatrix} from "../../utils/matrix-generation";
 import Grid, { GridRef } from "../ImperativeGrid/Grid";
+import {Box} from "@mui/material";
 
 export interface MazeMakerProps {
     stateToColorInterpreter: (state: MazeNodeState) => string;
@@ -90,6 +91,13 @@ export default function MazeMaker({
         // TODO : Make the new grid
     }, [gridCols, gridRows]);
 
+    const typeSelectionDivSx = {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 0.5,
+        alignItems: 'center'
+    }
+
     return(
     <div onMouseDown={() => setIsMouseDown(true)}
          onMouseLeave={() => setIsMouseDown(false)}
@@ -103,40 +111,44 @@ export default function MazeMaker({
             onSquareMouseEnter = {(x: number, y: number) => {if(isMouseDown) setSquareState({row: x, col: y}, placingType)}}
             ref = {gridRef}
         />
-        <div>
-            <div>
+        <Box sx = {{
+            display: 'flex',
+            gap: 4,
+            marginTop: 2,
+        }}>
+            <Box sx={typeSelectionDivSx}>
                 <SingleSquare color={stateToColorInterpreter(MazeNodeState.EMPTY)}
-                              borderColor={'gray'}
+                              borderColor={'black'}
                               size={40}
                               onClick={() => setPlacingType(MazeNodeState.EMPTY)}
                 />
                 Empty
-            </div>
-            <div>
+            </Box>
+            <Box sx={typeSelectionDivSx}>
                 <SingleSquare color={stateToColorInterpreter(MazeNodeState.BLOCKED)}
-                              borderColor={'gray'}
+                              borderColor={'black'}
                               size={40}
                               onClick={() => setPlacingType(MazeNodeState.BLOCKED)}
                 />
                 Wall
-            </div>
-            <div>
+            </Box>
+            <Box sx={typeSelectionDivSx}>
                 <SingleSquare color={stateToColorInterpreter(MazeNodeState.START)}
-                              borderColor={'gray'}
+                              borderColor={'black'}
                               size={40}
                               onClick={() => setPlacingType(MazeNodeState.START)}
                 />
                 Start
-            </div>
-            <div>
+            </Box>
+            <Box sx={typeSelectionDivSx}>
                 <SingleSquare color={stateToColorInterpreter(MazeNodeState.TARGET)}
-                              borderColor={'gray'}
+                              borderColor={'black'}
                               size={40}
                               onClick={() => setPlacingType(MazeNodeState.TARGET)}
                 />
                 Target
-            </div>
-        </div>
+            </Box>
+        </Box>
     </div>
     )
 }

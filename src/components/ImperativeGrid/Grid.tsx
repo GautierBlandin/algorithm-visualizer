@@ -12,6 +12,9 @@ const GridDiv = styled.div<GridDivInterface> `
   flex-direction: column;
   width: ${props => props.cols * 20}px;
   height: ${props => props.rows * 20}px;
+  border-radius: 8px;
+  border: 2px solid black;
+  overflow: hidden;
 `
 
 const Row = styled.div`
@@ -19,7 +22,10 @@ const Row = styled.div`
   display: flex;
   border-top: 1px solid black;
   &:last-child {
-    border-bottom: 1px solid black;
+    border-bottom: 2px none black;
+  }
+  &:first-child {
+    border-top: 2px none black;
   }
 `
 
@@ -49,9 +55,7 @@ const Grid = React.forwardRef<GridRef, GridProps>((({
     initialStateMatrix.forEach(() => {refMatrix2.current.push([])});
 
     const updateSquareState = (row: number, col: number, state: number) => {
-        if(refMatrix2.current[row][col] !== null) {
-            refMatrix2.current[row][col]!.updateState(state);
-        }
+            refMatrix2.current[row][col]?.updateState(state);
     }
 
     useImperativeHandle(ref, () => ({updateSquareState}), [])

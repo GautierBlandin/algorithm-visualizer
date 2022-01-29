@@ -33,7 +33,10 @@ const SquareDiv = styled.div<SquareDivProps>`
 }
 }} ${({animationDurationMs}) => animationDurationMs}ms both;
   &:last-child {
-    border-right: 1px solid black;
+    border-right: 2px none black;
+  }
+  &:first-child {
+    border-left: 2px none black;
   }
 `
 
