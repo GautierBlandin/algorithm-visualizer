@@ -4,12 +4,27 @@ import SingleSquare from "../SingleSquare";
 import {generateMatrix} from "../../utils/matrix-generation";
 import Grid, { GridRef } from "../ImperativeGrid/Grid";
 import {Box} from "@mui/material";
+import useWindowDimensions from "../../hooks/UseWindowDimensions";
 
 export interface MazeMakerProps {
     stateToColorInterpreter: (state: MazeNodeState) => string;
     squareSize: number;
     initialValues?: MazeMakingResult;
     generationResultFetcher: React.MutableRefObject<{fetch: () => MazeMakingResult | void}>;
+}
+
+export function generateResponsiveColRowNumber(squareSize: number, screenWidth: number): {rowNumber: number, colNumber: number} {
+    if(screenWidth < 1300){
+        return{
+            rowNumber: 20,
+            colNumber: Math.floor((screenWidth - 100)/squareSize)
+        }
+    } else {
+        return {
+            rowNumber: 20,
+            colNumber: 40
+        }
+    }
 }
 
 export default function MazeMaker({
@@ -19,17 +34,19 @@ export default function MazeMaker({
     generationResultFetcher
 }: MazeMakerProps){
 
-    const initialStart = initialValues?.start ?? {row: 4, col: 8};
-    const initialTarget = initialValues?.target?? {row: 3, col: 2};
-    const initialGrid = initialValues?.grid ?? generateMatrix<MazeNodeState>(MazeNodeState.EMPTY, 20, 40);
+    const {width, height} = useWindowDimensions();
+    const initialStart = initialValues?.start ?? {row: 3, col: 2};
+    const initialTarget = initialValues?.target?? {row: 4, col: 8};
+    const responsiveRowColNumbers = generateResponsiveColRowNumber(squareSize, width);
+    const initialGrid = initialValues?.grid ?? generateMatrix<MazeNodeState>(MazeNodeState.EMPTY, responsiveRowColNumbers.rowNumber, responsiveRowColNumbers.colNumber);
     initialGrid[initialStart.row][initialStart.col] = MazeNodeState.START;
     initialGrid[initialTarget.row][initialTarget.col] = MazeNodeState.TARGET;
 
     const stateMatrix: React.MutableRefObject<number[][]> = useRef(JSON.parse(JSON.stringify(initialGrid)));
     const start = useRef<Coordinate>(initialStart);
     const target = useRef<Coordinate>(initialTarget);
-    const [gridRows, setGridRows] = useState<number>(20);
-    const [gridCols, setGridCols] = useState<number>(40);
+    const [gridRows, setGridRows] = useState<number>(responsiveRowColNumbers.rowNumber);
+    const [gridCols, setGridCols] = useState<number>(responsiveRowColNumbers.colNumber);
     const [placingType, setPlacingType] = useState<MazeNodeState>(MazeNodeState.BLOCKED);
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
 

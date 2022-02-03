@@ -1,6 +1,12 @@
 import type { NextPage } from 'next'
-import ExplorationModule from "../components/ExplorationModule/ExplorationModule";
+// import ExplorationModule from "../components/ExplorationModule/ExplorationModule";
 import {Box} from "@mui/material";
+import dynamic from "next/dynamic";
+
+const ExplorationModule = dynamic(
+    () => import('../components/ExplorationModule/ExplorationModule'),
+    { ssr: false }
+)
 
 const Home: NextPage = () => {
   return (

@@ -78,14 +78,14 @@ export default function ExplorationModule({
         { generatorMode && <MazeMaker
             stateToColorInterpreter= {mazeStateToColor}
             generationResultFetcher={generationResultFetcher}
-            squareSize={30}
+            squareSize={20}
             initialValues={generationResult}
         /> }
         {
             (transformingGrid && !generatorMode) && <TransformingGridRenderer
             transformingGrid={transformingGrid}
             stateColorInterpreter={renderingStateToColor}
-            squareSize={30}
+            squareSize={20}
             />
         }
     </Box>
