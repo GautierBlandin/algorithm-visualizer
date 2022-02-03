@@ -34,9 +34,9 @@ export default function ExplorationModule({
         }
     }
 
-    function generateExplorationRequest(algorithm: Algorithms, gridGenerationResult: MazeMakingResult): ExternalGridExplorationRequest {
+    function generateExplorationRequest(gridGenerationResult: MazeMakingResult): ExternalGridExplorationRequest {
         return {
-            algorithm: explorationAlgorithm,
+            algorithm: gridGenerationResult.algorithm,
             request : {
                 start: {x: gridGenerationResult.start.row, y: gridGenerationResult.start.col},
                 target: {x: gridGenerationResult.target.row, y: gridGenerationResult.target.col},
@@ -53,7 +53,7 @@ export default function ExplorationModule({
             const generationResult = generationResultFetcher.current.fetch();
             if(generationResult) {
                 setGenerationResult(generationResult);
-                const externalExplorationRequest = generateExplorationRequest(explorationAlgorithm, generationResult);
+                const externalExplorationRequest = generateExplorationRequest(generationResult);
                 const explorationResult = exploreGrid(externalExplorationRequest);
                 const transformingGrid = explorationResultToTransformingGrid(explorationResult);
                 setTransformingGrid(transformingGrid);
@@ -66,15 +66,15 @@ export default function ExplorationModule({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: 2
+        gap: 2,
+        marginTop: 10
     }}>
         <Box sx={{
             display: 'flex',
             gap: 2
         }}>
-            <Button variant={'contained'} onClick={() => {setGeneratorMode(!generatorMode)}}>Toggle generation mode</Button>
-            { generatorMode && <Button variant={'contained'} onClick={() => {setExplorationAlgorithm(Algorithms.BFS)}}>BFS</Button> }
-            { generatorMode && <Button variant={'contained'} onClick={() => {setExplorationAlgorithm(Algorithms.DFS)}}>DFS</Button> }
+            <Button variant={'contained'} onClick={() => {setGeneratorMode(!generatorMode)}}>{generatorMode ? 'Visualize !' : 'Back to Maze Making !'}</Button>
+
         </Box>
         { generatorMode && <MazeMaker
             stateToColorInterpreter= {mazeStateToColor}

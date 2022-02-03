@@ -11,9 +11,8 @@ const ExplorationModule = dynamic(
 const Home: NextPage = () => {
   return (
     <Box sx={{
-      display: 'flex',
-      justifyContent: 'center',
-      marginTop: 2
+        display: 'flex',
+        justifyContent: 'center',
     }}>
       <ExplorationModule />
     </Box>
