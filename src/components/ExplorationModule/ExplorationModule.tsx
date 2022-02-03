@@ -65,6 +65,7 @@ export default function ExplorationModule({
     <Box sx={{
         display: 'flex',
         flexDirection: 'column',
+        alignItems: 'center',
         gap: 2
     }}>
         <Box sx={{
