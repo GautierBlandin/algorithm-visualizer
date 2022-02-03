@@ -2,9 +2,10 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Coordinate, MazeMakingResult, MazeNodeState} from "./maze-maker.interface";
 import SingleSquare from "../SingleSquare";
 import {generateMatrix} from "../../utils/matrix-generation";
-import Grid, { GridRef } from "../ImperativeGrid/Grid";
-import {Box} from "@mui/material";
+import Grid, {GridRef} from "../ImperativeGrid/Grid";
+import {Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import useWindowDimensions from "../../hooks/UseWindowDimensions";
+import {Algorithms} from "../../grid-exploration/grid-explorer.interfaces";
 
 export interface MazeMakerProps {
     stateToColorInterpreter: (state: MazeNodeState) => string;
@@ -49,6 +50,7 @@ export default function MazeMaker({
     const [gridCols, setGridCols] = useState<number>(responsiveRowColNumbers.colNumber);
     const [placingType, setPlacingType] = useState<MazeNodeState>(MazeNodeState.BLOCKED);
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
+    const [algorithm, setAlgorithm] = useState<Algorithms>(initialValues?.algorithm ?? Algorithms.BFS)
 
     const gridRef: React.MutableRefObject<GridRef | null> = useRef(null);
 
@@ -57,8 +59,9 @@ export default function MazeMaker({
             grid: stateMatrix.current.map(row => row.map(value => value)),
             start: start.current,
             target: target.current,
+            algorithm: algorithm,
         })
-    }, []);
+    }, [algorithm]);
 
     // Set a square state in the generated grid based on passed coords and state.
     const setSquareState = (coord: Coordinate, state: MazeNodeState) => {
@@ -130,8 +133,11 @@ export default function MazeMaker({
         />
         <Box sx = {{
             display: 'flex',
+            justifyContent: 'center',
             gap: 4,
             marginTop: 2,
+            maxWidth: '100%',
+            flexWrap: 'wrap'
         }}>
             <Box sx={typeSelectionDivSx}>
                 <SingleSquare color={stateToColorInterpreter(MazeNodeState.EMPTY)}
@@ -165,6 +171,21 @@ export default function MazeMaker({
                 />
                 Target
             </Box>
+            <FormControl>
+                <InputLabel id="demo-simple-select-label">Algorithm</InputLabel>
+                <Select value={algorithm}
+                        onChange={(event: SelectChangeEvent<Algorithms>) => {setAlgorithm(event.target.value as Algorithms)}}
+                        label={"Algorithm"}
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        sx={{
+                            minWidth: '100px'
+                        }}
+                >
+                    <MenuItem value={Algorithms.BFS}>BFS</MenuItem>
+                    <MenuItem value={Algorithms.DFS}>DFS</MenuItem>
+                </Select>
+            </FormControl>
         </Box>
     </div>
     )
